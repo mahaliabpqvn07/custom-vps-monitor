@@ -124,7 +124,9 @@ send_heartbeat() {
         tmux_created="$(sudo -n tmux list-sessions -F '#{session_name} #{session_created}' 2>/dev/null | awk '$1 == "Utopia" {print $2; exit}')"
         if [[ "$tmux_created" =~ ^[0-9]+$ ]]; then
             elapsed=$(( $(date +%s) - tmux_created )); (( elapsed < 0 )) && elapsed=0
-            uam_uptime="$((elapsed/86400)) ngày - $(((elapsed%86400)/3600)) giờ"
+            days=$((elapsed / 86400))
+            hours=$(((elapsed % 86400) / 3600))
+            uam_uptime="$days day$([ "$days" -ne 1 ] && echo "s") - $hours hour$([ "$hours" -ne 1 ] && echo "s")"
         else
             uam_uptime="Tmux UAM: không đọc được thời điểm tạo session Utopia (cần quyền sudo tmux)"
         fi
