@@ -60,6 +60,42 @@ sudo ufw allow from YOUR_HOME_IP to any port 8080 proto tcp
 
 Truy cập `http://PUBLIC_IP_VPS_TRUNG_TAM:8080/` và đăng nhập. Không dùng `https://`.
 
+Chạy tự động bằng systemd
+Đây là cách nên dùng khi triển khai lâu dài, để dịch vụ tự chạy lại sau khi VPS reboot.
+Trên server trung tâm
+
+Tạo service:
+
+```bash
+sudo nano /etc/systemd/system/vps-monitor.service
+```
+
+Nội dung:
+
+```bash
+[Unit]
+Description=VPS Monitor Dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/vps-monitor
+ExecStart=/usr/bin/python3 /opt/vps-monitor/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Lưu file rồi chạy:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now vps-monitor
+```
+
 ## 2. Agent trên từng VPS
 Chép `agent.sh` sang VPS cần theo dõi. Không cần chỉnh sửa file để chèn IP hoặc enrollment key. Chạy thử bằng tham số truyền từ bên ngoài:
 
