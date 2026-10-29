@@ -62,7 +62,7 @@ if [[ "$SERVER_BASE" != http://* ]]; then
     echo "SERVER_BASE must start with http:// (this build uses plain HTTP)." >&2
     exit 2
 fi
-INTERVAL=60
+INTERVAL=180
 STATE_DIR="/var/lib/vps-heartbeat"
 sudo rm -rf $STATE_DIR
 ID_FILE="$STATE_DIR/agent_id"
