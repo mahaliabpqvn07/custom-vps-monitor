@@ -94,10 +94,20 @@ Lưu file rồi chạy:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now vps-monitor
+sudo systemctl enable vps-monitor
+sudo systemctl restart vps-monitor || systemctl start vps-monitor
 ```
 
 ## 2. Agent trên từng VPS
+
+Cách 1 cài đặt nhanh
+
+```bash
+wget https://github.com/mahaliabpqvn07/custom-vps-monitor/raw/main/install-vps-heartbeat.sh
+sudo bash install-vps-heartbeat.sh http://PUBLIC_IP_VPS_TRUNG_TAM:8080 "ENROLLMENT_KEY"
+```
+
+Cách 2 cài đặt từng bước
 Chép `agent.sh` sang VPS cần theo dõi. Không cần chỉnh sửa file để chèn IP hoặc enrollment key. Chạy thử bằng tham số truyền từ bên ngoài:
 
 ```bash
