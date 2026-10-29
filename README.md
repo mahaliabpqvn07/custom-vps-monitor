@@ -81,8 +81,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/vps-monitor
-ExecStart=/usr/bin/python3 /opt/vps-monitor/server.py
+WorkingDirectory=/home/ubuntu/custom-vps-monitor
+ExecStart=/usr/bin/python3 /home/ubuntu/custom-vps-monitor/server.py
 Restart=always
 RestartSec=5
 
