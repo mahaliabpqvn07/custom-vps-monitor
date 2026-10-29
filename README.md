@@ -98,6 +98,12 @@ sudo systemctl enable vps-monitor
 sudo systemctl restart vps-monitor || systemctl start vps-monitor
 ```
 
+Tắt Service
+
+```bash
+sudo systemctl disable --now vps-monitor
+```
+
 ## 2. Agent trên từng VPS
 
 Cách 1 cài đặt nhanh
@@ -105,6 +111,12 @@ Cách 1 cài đặt nhanh
 ```bash
 wget https://github.com/mahaliabpqvn07/custom-vps-monitor/raw/main/install-vps-heartbeat.sh
 sudo bash install-vps-heartbeat.sh http://PUBLIC_IP_VPS_TRUNG_TAM:8080 "ENROLLMENT_KEY"
+```
+
+Tắt Service
+
+```bash
+sudo systemctl disable --now vps-heartbeat
 ```
 
 Cách 2 cài đặt từng bước
