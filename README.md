@@ -61,6 +61,7 @@ sudo ufw allow from YOUR_HOME_IP to any port 8080 proto tcp
 Truy cập `http://PUBLIC_IP_VPS_TRUNG_TAM:8080/` và đăng nhập. Không dùng `https://`.
 
 Chạy tự động bằng systemd
+
 Đây là cách nên dùng khi triển khai lâu dài, để dịch vụ tự chạy lại sau khi VPS reboot.
 Trên server trung tâm
 
