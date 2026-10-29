@@ -64,7 +64,7 @@ if [[ "$SERVER_BASE" != http://* ]]; then
 fi
 INTERVAL=180
 STATE_DIR="/var/lib/vps-heartbeat"
-sudo rm -rf $STATE_DIR
+#sudo rm -rf $STATE_DIR
 ID_FILE="$STATE_DIR/agent_id"
 TOKEN_FILE="$STATE_DIR/token"
 mkdir -p "$STATE_DIR"
