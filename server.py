@@ -173,9 +173,13 @@ class Handler(BaseHTTPRequestHandler):
                     now = int(time.time())
                     if path == "/api/delete":
                         aid = str(data.get("id", ""))
-                        row = con.execute("SELECT COALESCE(h.received_at,a.first_seen) AS last_seen FROM agents a LEFT JOIN heartbeats h ON a.agent_id=h.agent_id WHERE a.agent_id=?", (aid,)).fetchone()
-                        if not row or now - row["last_seen"] <= OFFLINE_AFTER:
-                            self.send_json(409, {"error": "VPS chưa offline hoặc không tồn tại; chỉ có thể xóa VPS offline"}); return
+                        row = con.execute("SELECT h.received_at AS last_seen FROM agents a LEFT JOIN heartbeats h ON a.agent_id=h.agent_id WHERE a.agent_id=?", (aid,)).fetchone()
+                        if not row:
+                            self.send_json(404, {"error": "VPS không tồn tại trong database"}); return
+                        # A registered agent with no heartbeat is already OFFLINE in /api/status.
+                        # Do not make it wait OFFLINE_AFTER seconds based on first_seen.
+                        if row["last_seen"] is not None and now - row["last_seen"] <= OFFLINE_AFTER:
+                            self.send_json(409, {"error": "VPS vẫn đang ONLINE hoặc vừa gửi heartbeat; hãy tải lại danh sách rồi thử xóa khi OFFLINE"}); return
                         con.execute("DELETE FROM events WHERE agent_id=?", (aid,))
                         con.execute("DELETE FROM heartbeats WHERE agent_id=?", (aid,))
                         con.execute("DELETE FROM agents WHERE agent_id=?", (aid,))
@@ -187,8 +191,9 @@ class Handler(BaseHTTPRequestHandler):
                         ids = list(dict.fromkeys(str(x)[:80] for x in raw_ids if x))
                         deleted = []
                         for aid in ids:
-                            row = con.execute("SELECT COALESCE(h.received_at,a.first_seen) AS last_seen FROM agents a LEFT JOIN heartbeats h ON a.agent_id=h.agent_id WHERE a.agent_id=?", (aid,)).fetchone()
-                            if row and now - row["last_seen"] > OFFLINE_AFTER:
+                            row = con.execute("SELECT h.received_at AS last_seen FROM agents a LEFT JOIN heartbeats h ON a.agent_id=h.agent_id WHERE a.agent_id=?", (aid,)).fetchone()
+                            # Keep deletion eligibility consistent with /api/status: no heartbeat = OFFLINE.
+                            if row and (row["last_seen"] is None or now - row["last_seen"] > OFFLINE_AFTER):
                                 deleted.append(aid)
                         for offset in range(0, len(deleted), 500):
                             batch = deleted[offset:offset + 500]
